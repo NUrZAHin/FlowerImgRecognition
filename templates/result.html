@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower Identification</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-3xl mb-4">Flower Identification</h1>
+        <form method="post" enctype="multipart/form-data">
+            <label class="block mb-2">Choose an image:</label>
+            <input type="file" name="file" accept=".jpg, .jpeg, .png" class="border p-2 mb-4" required>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Submit</button>
+        </form>
+        {% if message %}
+            <p class="text-red-500 mt-2">{{ message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
