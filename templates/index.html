@@ -3,20 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flower Identification</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <title>Flower Image Recognition</title>
+    <!-- Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        /* Your additional custom styles can be added here */
+        body {
+            padding: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 h-screen flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-md">
-        <h1 class="text-3xl mb-4">Flower Identification</h1>
-        <form method="post" enctype="multipart/form-data">
-            <label class="block mb-2">Choose an image:</label>
-            <input type="file" name="file" accept=".jpg, .jpeg, .png" class="border p-2 mb-4" required>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Submit</button>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Flower Image Recognition</h1>
+
+        <form id="uploadForm" method="POST" enctype="multipart/form-data" class="mt-4">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="customFile" name="file" accept="image/*" required>
+                <label class="custom-file-label" for="customFile">Choose file</label>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Upload</button>
         </form>
-        {% if message %}
-            <p class="text-red-500 mt-2">{{ message }}</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+
+        <div id="resultSection" class="mt-4 d-none">
+            <h2>Uploaded Image:</h2>
+            <p id="predictedClass" class="lead"></p>
+            <img id="flowerImage" src="" alt="Uploaded Flower" class="mb-4 img-thumbnail">
+
+
+            <!-- Update the <div> for similar images -->
+<h2>Top 10 Similar Images:</h2>
+<div id="similarImages" class="row"></div>
+
+<!-- Add jQuery UI for the accordion -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- Custom JavaScript -->
+<script>
+    $(document).ready(function () {
+        // Submit form using AJAX
+        $("#uploadForm").submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: "/",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    // Update UI with server response
+                    $("#flowerImage").attr("src", data.image_path);
+                    $("#predictedClass").text("Predicted Class: " + data.predicted_class);
+
+                    // Update similar images
+                    var similarImagesSection = $("#similarImages");
+                    similarImagesSection.empty();
+
+                    // Add an accordion for better organization
+                    var accordion = $("<div>").accordion();
+
+                    data.similar_images.forEach(function (imageInfo, index) {
+                        var imageElement = $("<img>")
+                            .attr("src", imageInfo.filename)
+                            .attr("alt", imageInfo.filename)
+                            .addClass("img-thumbnail");
+
+                        var similarityElement = $("<p>")
+                            .addClass("lead mt-2")
+                            .text("Similarity: " + (imageInfo.similarity * 100).toFixed(2) + "%");
+
+                        var predictedClassElement = $("<p>")
+                            .addClass("lead")
+                            .text("Image Id: " + imageInfo.predicted_class);
+
+                        // Add content to the accordion
+                        accordion.append(
+                            $("<h3>").text("Similar Image " + (index + 1)),
+                            $("<div>").append(imageElement, similarityElement, predictedClassElement)
+                        );
+                    });
+
+                    // Append the accordion to the similarImagesSection
+                    similarImagesSection.append(accordion);
+
+                    // Show result section
+                    $("#resultSection").removeClass("d-none");
+                },
+                error: function (error) {
+                    console.log("Error:", error);
+                }
+            });
+        });
+
+        // Update custom-file-label text
+        $("#customFile").change(function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).next(".custom-file-label").html(fileName);
+        });
+    });
+</script>

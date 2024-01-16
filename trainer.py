@@ -24,7 +24,7 @@ train_generator = train_datagen.flow_from_directory(
     class_mode='categorical',
     subset='training',
     shuffle=True,
-    seed=42,  # Set a seed for reproducibility
+    seed=42,  # Set a seed for reproducibility, diferent seed diferent result
     classes=['bougainvillea', 'daisies', 'gardenias', 'gardenroses', 'hibiscus','hydrangeas','lilies','orchids','peonies','tulip']  # Specify your classes
 )
 
@@ -50,7 +50,7 @@ model = Sequential([
     Dropout(0.5),
     Dense(256, activation='relu'),
     Dropout(0.5),
-    Dense(10, activation='softmax')  # Update to match the number of classes in your dataset
+    Dense(10, activation='softmax') 
 ])
 
 

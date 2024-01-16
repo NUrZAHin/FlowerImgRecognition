@@ -1,3 +1,4 @@
 node_modules
-uploads
-flowers
+flower_classification_model.h5
+flower_classification_model.json
+flower_classification_weights.h5
