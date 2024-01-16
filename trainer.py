@@ -24,8 +24,8 @@ train_generator = train_datagen.flow_from_directory(
     class_mode='categorical',
     subset='training',
     shuffle=True,
-    seed=42,  # Set a seed for reproducibility, diferent seed diferent result
-    classes=['bougainvillea', 'daisies', 'gardenias', 'gardenroses', 'hibiscus','hydrangeas','lilies','orchids','peonies','tulip']  # Specify your classes
+    seed=42,  
+    classes=['bougainvillea', 'daisies', 'gardenias', 'gardenroses', 'hibiscus','hydrangeas','lilies','orchids','peonies','tulip'] 
 )
 
 
@@ -68,12 +68,10 @@ loss, accuracy = model.evaluate(validation_generator)
 
 model.save("flower_classification_model.h5")
 
-# If you want to save only the model architecture (without weights and optimizer state)
 model_json = model.to_json()
 with open("flower_classification_model.json", "w") as json_file:
     json_file.write(model_json)
 
-# If you want to save only the weights
 model.save_weights("flower_classification_weights.h5")
 print(f"Validation Accuracy: {accuracy * 100:.2f}%")
 

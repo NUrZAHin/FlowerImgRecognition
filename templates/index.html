@@ -7,7 +7,6 @@
     <!-- Bootstrap CSS link -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
-        /* Your additional custom styles can be added here */
         body {
             padding: 20px;
         }
@@ -35,16 +34,13 @@
             <img id="flowerImage" src="" alt="Uploaded Flower" class="mb-4 img-thumbnail">
 
 
-            <!-- Update the <div> for similar images -->
 <h2>Top 10 Similar Images:</h2>
 <div id="similarImages" class="row"></div>
 
-<!-- Add jQuery UI for the accordion -->
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<!-- Custom JavaScript -->
 <script>
     $(document).ready(function () {
         // Submit form using AJAX
@@ -59,15 +55,12 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    // Update UI with server response
                     $("#flowerImage").attr("src", data.image_path);
                     $("#predictedClass").text("Predicted Class: " + data.predicted_class);
 
-                    // Update similar images
                     var similarImagesSection = $("#similarImages");
                     similarImagesSection.empty();
 
-                    // Add an accordion for better organization
                     var accordion = $("<div>").accordion();
 
                     data.similar_images.forEach(function (imageInfo, index) {
@@ -84,17 +77,14 @@
                             .addClass("lead")
                             .text("Image Id: " + imageInfo.predicted_class);
 
-                        // Add content to the accordion
                         accordion.append(
                             $("<h3>").text("Similar Image " + (index + 1)),
                             $("<div>").append(imageElement, similarityElement, predictedClassElement)
                         );
                     });
 
-                    // Append the accordion to the similarImagesSection
                     similarImagesSection.append(accordion);
 
-                    // Show result section
                     $("#resultSection").removeClass("d-none");
                 },
                 error: function (error) {
@@ -103,7 +93,6 @@
             });
         });
 
-        // Update custom-file-label text
         $("#customFile").change(function () {
             var fileName = $(this).val().split("\\").pop();
             $(this).next(".custom-file-label").html(fileName);

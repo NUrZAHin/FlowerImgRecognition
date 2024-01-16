@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const imageElement = document.getElementById("flowerImage");
     const resultText = document.getElementById("resultText");
 
-    // Set the source of the image
     imageElement.src = data.image_path;
 
     resultText.textContent = `Predicted Flower Class: ${data.predicted_class}`;
