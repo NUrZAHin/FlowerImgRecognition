@@ -77,7 +77,7 @@
                         .attr("src", imageInfo.filename)
                         .attr("alt", imageInfo.filename)
                         .addClass("img-thumbnail");
-
+                        
                     var predictedClassElement = $("<p>")
                         .addClass("lead")
                         .text("Image Id: " + imageInfo.predicted_class);
@@ -93,7 +93,7 @@
 
                     accordion.append(
                         $("<h3>").text("Similar Image " + (index + 1)),
-                        $("<div>").append(imageElement, similarityElement, predictedClassElement, shapeSimilarityElement, colorSimilarityElement)
+                        $("<div>").append(imageElement, predictedClassElement, shapeSimilarityElement, colorSimilarityElement)
                     );
                 });
 
