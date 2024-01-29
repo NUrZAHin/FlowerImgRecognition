@@ -14,6 +14,14 @@
             max-width: 100%;
             height: auto;
         }
+        #consoleBox {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+            padding: 10px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -33,69 +41,79 @@
             <p id="predictedClass" class="lead"></p>
             <img id="flowerImage" src="" alt="Uploaded Flower" class="mb-4 img-thumbnail">
 
+            <h2>Top 10 Similar Images:</h2>
+            <div id="similarImages" class="row"></div>
+        </div>
+    </div>
 
-<h2>Top 10 Similar Images:</h2>
-<div id="similarImages" class="row"></div>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-3.6.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+    // Submit form using AJAX
+    $("#uploadForm").submit(function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
 
-<script>
-    $(document).ready(function () {
-        // Submit form using AJAX
-        $("#uploadForm").submit(function (e) {
-            e.preventDefault();
-            var formData = new FormData(this);
+        $.ajax({
+            url: "/",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $("#flowerImage").attr("src", data.image_path);
+                $("#predictedClass").text("Predicted Class: " + data.predicted_class);
 
-            $.ajax({
-                url: "/",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    $("#flowerImage").attr("src", data.image_path);
-                    $("#predictedClass").text("Predicted Class: " + data.predicted_class);
+                var similarImagesSection = $("#similarImages");
+                similarImagesSection.empty();
 
-                    var similarImagesSection = $("#similarImages");
-                    similarImagesSection.empty();
+                var accordion = $("<div>").accordion();
 
-                    var accordion = $("<div>").accordion();
+                data.similar_images.forEach(function (imageInfo, index) {
+                    var imageElement = $("<img>")
+                        .attr("src", imageInfo.filename)
+                        .attr("alt", imageInfo.filename)
+                        .addClass("img-thumbnail");
 
-                    data.similar_images.forEach(function (imageInfo, index) {
-                        var imageElement = $("<img>")
-                            .attr("src", imageInfo.filename)
-                            .attr("alt", imageInfo.filename)
-                            .addClass("img-thumbnail");
+                    var predictedClassElement = $("<p>")
+                        .addClass("lead")
+                        .text("Image Id: " + imageInfo.predicted_class);
 
-                        var similarityElement = $("<p>")
-                            .addClass("lead mt-2")
-                            .text("Similarity: " + (imageInfo.similarity * 100).toFixed(2) + "%");
+                    // Display shape and color similarity
+                    var shapeSimilarityElement = $("<p>")
+                        .addClass("lead")
+                        .text("Shape Similarity: " + (imageInfo.shape_similarity * 100).toFixed(2) + "%");
 
-                        var predictedClassElement = $("<p>")
-                            .addClass("lead")
-                            .text("Image Id: " + imageInfo.predicted_class);
+                    var colorSimilarityElement = $("<p>")
+                        .addClass("lead")
+                        .text("Color Similarity: " + (imageInfo.color_similarity * 100).toFixed(2) + "%");
 
-                        accordion.append(
-                            $("<h3>").text("Similar Image " + (index + 1)),
-                            $("<div>").append(imageElement, similarityElement, predictedClassElement)
-                        );
-                    });
+                    accordion.append(
+                        $("<h3>").text("Similar Image " + (index + 1)),
+                        $("<div>").append(imageElement, similarityElement, predictedClassElement, shapeSimilarityElement, colorSimilarityElement)
+                    );
+                });
 
-                    similarImagesSection.append(accordion);
+                similarImagesSection.append(accordion);
 
-                    $("#resultSection").removeClass("d-none");
-                },
-                error: function (error) {
-                    console.log("Error:", error);
-                }
-            });
-        });
-
-        $("#customFile").change(function () {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).next(".custom-file-label").html(fileName);
+                $("#resultSection").removeClass("d-none");
+            },
+            error: function (error) {
+                console.log("Error:", error);
+                logToConsole("Error: " + JSON.stringify(error));
+            }
         });
     });
-</script>
+
+    $("#customFile").change(function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).next(".custom-file-label").html(fileName);
+    });
+});
+
+    </script>
+</body>
+</html>
